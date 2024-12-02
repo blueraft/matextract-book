@@ -1,18 +1,26 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim
+# Use an official jupyter image as a parent image
+FROM jupyter/datascience-notebook:lab-3.6.2 AS jupyter
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+# Fix: https://github.com/hadolint/hadolint/wiki/DL4006
+# Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-COPY --from=ghcr.io/astral-sh/uv:0.5.5 /uv /uvx /bin/
+USER root
 
-ENV UV_SYSTEM_PYTHON=1
+RUN apt-get update \
+ && apt-get install --yes --quiet --no-install-recommends \
+       libmagic1 \
+       # clean cache and logs
+       && rm -rf /var/lib/apt/lists/* /var/log/* /var/tmp/* ~/.npm
+
+# Switch back to jovyan to avoid accidental container runs as root
+USER ${NB_UID}
+WORKDIR "${HOME}"
+
+COPY --from=ghcr.io/astral-sh/uv:0.5 /uv /bin/uv
 
 # Install PyTorch with CUDA support
 RUN uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
@@ -26,12 +34,6 @@ RUN uv pip install -r package/requirements.txt
 # Install the local package
 RUN uv pip install -e .
 
-# Make port 8888 available to the world outside this container
-EXPOSE 8888
-
-# Create a non-root user and switch to it
-RUN useradd -m jupyter
-USER jupyter
-
-# Run Jupyter when the container launches
-CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
+# Get rid ot the following message when you open a terminal in jupyterlab:
+# groups: cannot find name for group ID 11320
+RUN touch ${HOME}/.hushlogin
