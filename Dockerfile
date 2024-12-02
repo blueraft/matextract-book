@@ -28,10 +28,10 @@ RUN uv pip install torch torchvision torchaudio --index-url https://download.pyt
 COPY . /app
 
 # Install any needed packages specified in requirements.txt
-RUN uv pip install -r app/package/requirements.txt
+RUN uv pip install -r /app/package/requirements.txt
 
 # Install the local package
-RUN uv pip install -e app
+RUN uv pip install -e /app
 
 # Get rid ot the following message when you open a terminal in jupyterlab:
 # groups: cannot find name for group ID 11320
