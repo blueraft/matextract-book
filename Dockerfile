@@ -3,9 +3,6 @@ FROM jupyter/datascience-notebook:lab-3.6.2 AS jupyter
 
 ENV UV_SYSTEM_PYTHON=1
 
-# Set the working directory in the container
-WORKDIR /app
-
 # Fix: https://github.com/hadolint/hadolint/wiki/DL4006
 # Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -31,10 +28,10 @@ RUN uv pip install torch torchvision torchaudio --index-url https://download.pyt
 COPY . /app
 
 # Install any needed packages specified in requirements.txt
-RUN uv pip install -r package/requirements.txt
+RUN uv pip install -r app/package/requirements.txt
 
 # Install the local package
-RUN uv pip install -e .
+RUN uv pip install -e app
 
 # Get rid ot the following message when you open a terminal in jupyterlab:
 # groups: cannot find name for group ID 11320
