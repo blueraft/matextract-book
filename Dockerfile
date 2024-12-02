@@ -1,6 +1,8 @@
 # Use an official jupyter image as a parent image
 FROM jupyter/datascience-notebook:lab-3.6.2 AS jupyter
 
+ENV UV_SYSTEM_PYTHON=1
+
 # Set the working directory in the container
 WORKDIR /app
 
