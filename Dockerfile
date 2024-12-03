@@ -28,7 +28,7 @@ RUN uv pip install torch torchvision torchaudio --index-url https://download.pyt
 COPY . /app
 
 # Install any needed packages specified in requirements.txt
-RUN uv pip install -r /app/package/requirements.txt
+# RUN uv pip install -r /app/package/requirements.txt
 
 # Install the local package
 RUN uv pip install -e /app
