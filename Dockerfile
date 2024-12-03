@@ -1,5 +1,5 @@
 # Use an official jupyter image as a parent image
-FROM jupyter/datascience-notebook:lab-3.6.2 AS jupyter
+FROM jupyter/datascience-notebook:lab-4.0.7 AS jupyter
 
 ENV UV_SYSTEM_PYTHON=1
 
